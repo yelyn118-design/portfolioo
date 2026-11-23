@@ -1,0 +1,6 @@
+{
+  "name": "심예린 | Personal Portfolio & Knowledge Graph Explorer",
+  "description": "심예린의 자기소개, 학력, 프로젝트 결과물, Neo4j 아이즈원 지식그래프 데이터 탐색기를 담은 단일 HTML 개인 포트폴리오 웹사이트",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

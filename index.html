@@ -1,0 +1,3147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>심예린 | Personal Portfolio &amp; Knowledge Graph Explorer</title>
+  <meta name="description" content="불어불문학과·미디어학부 심예린의 자기소개, 활동 이력, 프로젝트 결과물 및 Neo4j 지식그래프 데이터 탐색기를 담은 개인 포트폴리오 웹사이트입니다." />
+  <meta property="og:title" content="심예린 | Personal Portfolio &amp; Knowledge Graph Explorer" />
+  <meta property="og:description" content="언어와 미디어, 데이터 네트워크를 잇는 심예린의 에디토리얼 포트폴리오" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --pink-main: #F7B8D2;
+      --pink-light: #FFF0F6;
+      --pink-softer: #FFF7FA;
+      --pink-accent: #E88DB5;
+      --pink-deep: #B53D70;
+      --pink-deep-hover: #9B2E5D;
+      --bg-white: #FFFFFF;
+      --text-main: #333333;
+      --text-muted: #66535C;
+      --text-subtle: #7D6A73;
+      --border-soft: #F7B8D2;
+      --border-hairline: #F4DCE6;
+      --shadow-editorial: 0 14px 40px -16px rgba(181, 61, 112, 0.14);
+      --shadow-card: 0 8px 24px -10px rgba(181, 61, 112, 0.10);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      --font-serif: 'Cormorant Garamond', 'Noto Sans KR', Georgia, serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --transition: 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      background-color: var(--bg-white);
+      background-image:
+        radial-gradient(circle at 12% 8%, rgba(247, 184, 210, 0.28) 0%, rgba(255, 255, 255, 0) 38%),
+        radial-gradient(circle at 88% 18%, rgba(255, 240, 246, 0.85) 0%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(circle at 50% 85%, rgba(247, 184, 210, 0.18) 0%, rgba(255, 255, 255, 0) 45%);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2.5px solid var(--pink-deep);
+      outline-offset: 2px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 12px;
+      z-index: 9999;
+      background: var(--pink-deep);
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .skip-link:focus {
+      left: 16px;
+    }
+
+    /* Top Editorial Ribbon (Matching reference top accent strip) */
+    .top-accent-strip {
+      height: 6px;
+      background: linear-gradient(90deg, #F7B8D2 0%, #E88DB5 50%, #F7B8D2 100%);
+      width: 100%;
+    }
+
+    /* Sticky Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: none;
+      border: none;
+      padding: 4px 6px;
+      border-radius: 14px;
+      text-align: left;
+      transition: transform var(--transition);
+    }
+    .brand-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .brand-monogram {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--pink-light) 0%, var(--pink-main) 100%);
+      border: 1.5px solid var(--pink-accent);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--pink-deep);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .brand-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1.5px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 999px;
+      transition: all var(--transition);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover {
+      background: var(--pink-softer);
+      color: var(--pink-deep);
+      border-color: var(--border-hairline);
+    }
+    .nav-btn.is-active {
+      background: var(--pink-light);
+      color: var(--pink-deep);
+      border-color: var(--pink-main);
+      box-shadow: 0 2px 10px rgba(232, 141, 181, 0.22);
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: var(--pink-light);
+      border: 1.5px solid var(--pink-main);
+      color: var(--pink-deep);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-drawer {
+      display: none;
+      border-top: 1px solid var(--border-hairline);
+      background: rgba(255, 255, 255, 0.98);
+      padding: 14px 24px 20px;
+    }
+    .mobile-drawer.is-open {
+      display: block;
+    }
+    .mobile-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mobile-nav-list .nav-btn {
+      width: 100%;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 14px;
+    }
+
+    /* Main Container */
+    .main-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+    }
+
+    .page-view {
+      display: none;
+      animation: pageFadeIn 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .page-view.is-active {
+      display: block;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Editorial Outer Frame (Inspired by reference image) */
+    .editorial-frame {
+      background: var(--bg-white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-editorial);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .editorial-masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .masthead-left {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+      line-height: 1.5;
+    }
+    .masthead-left strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .masthead-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: var(--pink-main);
+      border: none;
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--transition), background var(--transition);
+    }
+    .search-icon-btn:hover {
+      background: var(--pink-deep);
+      transform: scale(1.06);
+    }
+
+    .masthead-columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .masthead-col-item {
+      padding: 10px 14px;
+      background: var(--pink-softer);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+    }
+    .masthead-col-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    /* Hero Spread */
+    .hero-spread {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-copy-card {
+      background: linear-gradient(155deg, var(--pink-light) 0%, #FFFFFF 65%);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .hero-kicker {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--pink-deep);
+    }
+
+    .hero-title-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .hero-name-ko {
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0;
+      color: var(--text-main);
+    }
+
+    .hero-name-en {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      font-weight: 600;
+      color: var(--pink-deep);
+    }
+
+    .hero-lead {
+      font-size: 1.02rem;
+      color: var(--text-main);
+      margin: 14px 0 0;
+      line-height: 1.75;
+    }
+
+    .hero-keywords {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+    }
+    .hero-keywords span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-keywords span::before {
+      content: "✦";
+      color: var(--pink-accent);
+      font-size: 0.75rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--pink-deep);
+      color: #FFFFFF;
+      border: 1.5px solid var(--pink-deep);
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: var(--pink-deep-hover);
+      border-color: var(--pink-deep-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px rgba(181, 61, 112, 0.42);
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      color: var(--pink-deep);
+      border: 1.5px solid var(--pink-main);
+      padding: 11px 20px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .btn-secondary:hover {
+      background: var(--pink-light);
+      transform: translateY(-2px);
+    }
+
+    .hero-visual-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1.5px solid var(--border-soft);
+      background: linear-gradient(145deg, #FBD6E6 0%, #FFF0F6 55%, #F7B8D2 100%);
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+    }
+
+    .hero-portrait-wrap {
+      position: relative;
+      margin: 0 auto 14px;
+      width: 220px;
+      height: 270px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 18px 34px -12px rgba(181, 61, 112, 0.28);
+      background: var(--pink-softer);
+    }
+
+    .hero-portrait-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .hero-script-accent {
+      position: absolute;
+      right: 20px;
+      bottom: 66px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 3.1rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 14px rgba(181, 61, 112, 0.25);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .hero-visual-caption {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.82rem;
+    }
+
+    /* Reference-inspired Asymmetric Magazine Grid (Below Hero) */
+    .magazine-asymmetric {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .profile-banner-pill {
+      background: linear-gradient(135deg, #FBD5E5 0%, #F7B8D2 100%);
+      border-radius: 999px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1.5px solid #F2A5C4;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 18px;
+    }
+
+    .profile-banner-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2.5px solid #FFFFFF;
+      flex-shrink: 0;
+      background: var(--pink-light);
+    }
+    .profile-banner-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .profile-banner-meta {
+      min-width: 0;
+    }
+    .profile-banner-meta .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pink-deep);
+    }
+    .profile-banner-meta .value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
+    .letter-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 26px 26px 22px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .letter-quote-mark {
+      font-family: var(--font-serif);
+      font-size: 2.1rem;
+      line-height: 1;
+      color: var(--pink-accent);
+      margin-bottom: 6px;
+    }
+
+    .letter-heading {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--text-main);
+    }
+
+    .letter-body {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      margin: 0 0 18px;
+      line-height: 1.78;
+    }
+
+    .letter-sign {
+      text-align: right;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 12px;
+    }
+
+    .editorial-footnote {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-left: 3px solid var(--pink-accent);
+      background: var(--pink-softer);
+      border-radius: 0 12px 12px 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .right-showcase-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .quick-tabs-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .soft-tab {
+      background: var(--pink-light);
+      color: var(--pink-deep);
+      border: 1px solid var(--pink-main);
+      padding: 7px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .soft-tab:hover {
+      background: var(--pink-main);
+      color: #FFFFFF;
+    }
+
+    .wiki-facts-card {
+      background: var(--pink-softer);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .fact-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border-hairline);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .fact-item-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      margin-bottom: 2px;
+    }
+    .fact-item-value {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Section Headers & Cards */
+    .section-block {
+      margin-top: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .section-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pink-deep);
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      font-size: clamp(1.45rem, 2.5vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: var(--text-main);
+    }
+
+    .section-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin: 4px 0 0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .editorial-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .editorial-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-editorial);
+    }
+
+    .editorial-card.is-soft {
+      background: var(--pink-softer);
+    }
+
+    .editable-notice {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--pink-deep);
+      background: var(--pink-light);
+      border: 1px dashed var(--pink-accent);
+      border-radius: 8px;
+      padding: 2px 8px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* Timeline */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .timeline-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 18px;
+      align-items: start;
+      transition: transform var(--transition);
+    }
+    .timeline-card:hover {
+      transform: translateX(4px);
+    }
+    .timeline-card.is-placeholder {
+      border-style: dashed;
+      background: var(--pink-softer);
+    }
+
+    .timeline-period {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--pink-deep);
+      background: var(--pink-light);
+      padding: 6px 12px;
+      border-radius: 10px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .timeline-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: var(--text-main);
+    }
+
+    .timeline-org {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--pink-deep);
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Skills */
+    .skill-group-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-items {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skill-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-hairline);
+      font-size: 0.9rem;
+    }
+    .skill-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .skill-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .skill-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* Contact Card */
+    .contact-banner {
+      background: linear-gradient(135deg, var(--pink-light) 0%, #FFFFFF 60%, var(--pink-softer) 100%);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .contact-links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .contact-link-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all var(--transition);
+    }
+    .contact-link-box:hover {
+      border-color: var(--pink-deep);
+      transform: translateY(-2px);
+    }
+    .contact-link-box .cl-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .contact-link-box .cl-val {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
+    /* PAGE 2: PROJECTS */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .filter-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      background: var(--pink-softer);
+      color: var(--pink-deep);
+    }
+    .filter-btn.is-active {
+      background: var(--pink-deep);
+      border-color: var(--pink-deep);
+      color: #FFFFFF;
+    }
+
+    .projects-asymmetric-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .project-card {
+      grid-column: span 6;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .project-card.is-featured {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-editorial);
+    }
+    .project-card.is-template {
+      border-style: dashed;
+      background: var(--pink-softer);
+    }
+
+    .project-visual {
+      background: linear-gradient(145deg, var(--pink-light) 0%, #FFE4EF 100%);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .project-card.is-featured .project-visual {
+      border-bottom: none;
+      border-right: 1px solid var(--border-hairline);
+      min-height: 300px;
+    }
+
+    .project-body {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .project-meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 6px 0 8px;
+      line-height: 1.35;
+      color: var(--text-main);
+    }
+
+    .project-summary {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .project-tech-line {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding-top: 12px;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .project-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Project Detail Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(51, 33, 42, 0.56);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border: 2px solid var(--pink-main);
+      border-radius: var(--radius-xl);
+      max-width: 880px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      box-shadow: 0 28px 60px rgba(51, 33, 42, 0.25);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: sticky;
+      top: 0;
+      float: right;
+      background: var(--pink-light);
+      border: 1.5px solid var(--pink-main);
+      color: var(--pink-deep);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .modal-close-btn:hover {
+      background: var(--pink-deep);
+      color: #FFFFFF;
+    }
+
+    .modal-section {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-hairline);
+    }
+    .modal-section h4 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .modal-section p, .modal-section ul {
+      margin: 0;
+      font-size: 0.93rem;
+      color: var(--text-main);
+    }
+    .modal-section ul {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* PAGE 3: DATA EXPLORER */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .explorer-controls {
+      background: var(--pink-softer);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .controls-row {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .control-input, .control-select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-soft);
+      background: #FFFFFF;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.88rem;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .preset-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      margin-right: 4px;
+    }
+    .preset-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--pink-main);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .preset-btn:hover, .preset-btn.is-active {
+      background: var(--pink-deep);
+      border-color: var(--pink-deep);
+      color: #FFFFFF;
+    }
+
+    .query-insight-box {
+      background: #FFFFFF;
+      border-left: 4px solid var(--pink-deep);
+      border-radius: 0 12px 12px 0;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      display: none;
+    }
+    .query-insight-box.is-visible {
+      display: block;
+    }
+
+    .explorer-workspace {
+      display: grid;
+      grid-template-columns: 1.55fr 0.85fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .graph-stage-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      min-height: 540px;
+      box-shadow: var(--shadow-card);
+    }
+
+    #graphCanvas {
+      width: 100%;
+      height: 540px;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+    #graphCanvas:active {
+      cursor: grabbing;
+    }
+
+    .graph-toolbar {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border-soft);
+      padding: 6px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .graph-tool-btn {
+      background: var(--pink-softer);
+      border: 1px solid var(--border-hairline);
+      color: var(--pink-deep);
+      padding: 6px 10px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .graph-tool-btn:hover {
+      background: var(--pink-main);
+      color: #FFFFFF;
+    }
+
+    .graph-legend {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border-hairline);
+      border-radius: 14px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      font-size: 0.76rem;
+      max-width: calc(100% - 28px);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .graph-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(51, 33, 42, 0.92);
+      color: #FFFFFF;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      display: none;
+      z-index: 10;
+      max-width: 240px;
+    }
+
+    .inspector-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 540px;
+      overflow-y: auto;
+    }
+
+    .inspector-class-badge {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+
+    .inspector-node-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-main);
+    }
+
+    .prop-box {
+      background: var(--pink-softer);
+      border: 1px solid var(--border-hairline);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.86rem;
+    }
+
+    .edge-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .edge-item-btn {
+      width: 100%;
+      text-align: left;
+      background: #FFFFFF;
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.84rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+    }
+    .edge-item-btn:hover {
+      background: var(--pink-light);
+      border-color: var(--pink-main);
+    }
+    .edge-rel-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--pink-deep);
+      flex-shrink: 0;
+    }
+
+    /* Footer & Back to top */
+    .site-footer {
+      border-top: 1px solid var(--border-hairline);
+      background: var(--pink-softer);
+      padding: 28px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--pink-deep);
+      color: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 8px 20px rgba(181, 61, 112, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      font-weight: 700;
+    }
+    .back-to-top.is-visible {
+      display: flex;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 480ms ease, transform 480ms ease;
+    }
+    .reveal.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 980px) {
+      .hero-spread,
+      .magazine-asymmetric,
+      .contact-banner,
+      .explorer-workspace,
+      .project-card.is-featured {
+        grid-template-columns: 1fr;
+      }
+      .project-card.is-featured .project-visual {
+        border-right: none;
+        border-bottom: 1px solid var(--border-hairline);
+      }
+      .controls-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .stats-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-toggle { display: inline-flex; }
+      .editorial-frame { padding: 18px; border-radius: 22px; }
+      .masthead-columns,
+      .grid-2,
+      .grid-3,
+      .facts-grid,
+      .contact-links-grid,
+      .controls-row {
+        grid-template-columns: 1fr;
+      }
+      .project-card { grid-column: span 12; }
+      .timeline-card { grid-template-columns: 1fr; gap: 10px; }
+      .hero-copy-card { padding: 24px 20px; }
+      .modal-dialog { padding: 22px 18px; }
+      #graphCanvas, .graph-stage-card { min-height: 430px; height: 430px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">본문 바로가기</a>
+  <div class="top-accent-strip" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <button type="button" class="brand-btn" id="brandHomeBtn" aria-label="홈으로 이동">
+        <span class="brand-monogram" aria-hidden="true">Y</span>
+        <span class="brand-text">
+          <span class="brand-name">심예린</span>
+          <span class="brand-sub">Editorial Portfolio</span>
+        </span>
+      </button>
+
+      <nav class="desktop-nav" aria-label="주 메뉴">
+        <button type="button" class="nav-btn is-active" data-page="about" aria-current="page">About</button>
+        <button type="button" class="nav-btn" data-page="projects">Projects</button>
+        <button type="button" class="nav-btn" data-page="explorer">Data Explorer</button>
+      </nav>
+
+      <button
+        type="button"
+        class="mobile-menu-toggle"
+        id="mobileMenuBtn"
+        aria-expanded="false"
+        aria-controls="mobileDrawer"
+        aria-label="모바일 메뉴 열기"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="mobile-drawer" id="mobileDrawer">
+      <div class="mobile-nav-list" role="navigation" aria-label="모바일 메뉴">
+        <button type="button" class="nav-btn is-active" data-page="about">About — 자기소개</button>
+        <button type="button" class="nav-btn" data-page="projects">Projects — 프로젝트</button>
+        <button type="button" class="nav-btn" data-page="explorer">Data Explorer — 데이터 탐색</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="main-shell">
+    <!-- ==================== PAGE 1: HOME / ABOUT ==================== -->
+    <section id="page-about" class="page-view is-active" aria-labelledby="heroNameHeading">
+      <div class="editorial-frame">
+        <div class="editorial-masthead">
+          <div class="masthead-left">
+            <strong>portfolio edition · 2026</strong><br />
+            <span>dh.aks.ac.kr/~kimseoyun/wiki/사용자:심예린</span>
+          </div>
+          <div class="masthead-right">
+            <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;">Explore Graph</span>
+            <button type="button" class="search-icon-btn" id="quickExplorerBtn" title="지식그래프 탐색기로 이동" aria-label="지식그래프 탐색기로 이동">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="masthead-columns">
+          <div class="masthead-col-item">
+            <div class="masthead-col-label">Major &amp; Track</div>
+            <div id="mastheadMajor">불어불문학 · 미디어학부 복수전공</div>
+          </div>
+          <div class="masthead-col-item">
+            <div class="masthead-col-label">Career Direction</div>
+            <div id="mastheadCareer">방송PD 지망 · 전문가 트랙 · 서울/수도권</div>
+          </div>
+          <div class="masthead-col-item">
+            <div class="masthead-col-label">Digital Humanities</div>
+            <div id="mastheadDH">Neo4j 지식그래프 구축 및 네트워크 분석</div>
+          </div>
+        </div>
+
+        <div class="hero-spread">
+          <div class="hero-copy-card">
+            <div>
+              <div class="hero-kicker">Personal Editorial Portfolio</div>
+              <div class="hero-title-row">
+                <h1 id="heroNameHeading" class="hero-name-ko">심예린</h1>
+                <span class="hero-name-en" id="heroEnglishName">[Shim Yerin]</span>
+              </div>
+              <p class="hero-lead" id="heroIntroText"></p>
+            </div>
+
+            <div>
+              <div class="hero-keywords" id="heroKeywordsList"></div>
+              <div class="hero-actions" style="margin-top:20px;">
+                <button type="button" class="btn-primary" id="heroToProjectsBtn">프로젝트 살펴보기 →</button>
+                <button type="button" class="btn-secondary" id="heroToExplorerBtn">지식그래프 탐색</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual-card">
+            <div class="hero-portrait-wrap">
+              <img id="heroPortraitImg" src="" alt="심예린 프로필 사진" />
+            </div>
+            <div class="hero-script-accent" aria-hidden="true">Story</div>
+            <div class="hero-visual-caption">
+              <div>
+                <strong style="color:var(--pink-deep); display:block;">2024학번 · ENFJ</strong>
+                <span style="color:var(--text-muted);">언어의 섬세함과 미디어의 구조화</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--pink-deep); font-weight:600;">COLA173-18</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="magazine-asymmetric">
+          <div>
+            <div class="profile-banner-pill">
+              <div class="profile-banner-avatar">
+                <img id="bannerAvatarImg" src="" alt="심예린 아바타" />
+              </div>
+              <div class="profile-banner-meta">
+                <div class="label">profile · contact</div>
+                <div class="value" id="bannerEmailText">yelin20050118@gmail.com</div>
+              </div>
+            </div>
+
+            <article class="letter-card">
+              <div class="letter-quote-mark" aria-hidden="true">❝</div>
+              <h2 class="letter-heading">About Me — 사람과 콘텐츠의 연결을 읽는 기록</h2>
+              <p class="letter-body" id="aboutLetterBody"></p>
+              <div class="letter-sign">
+                <strong>from 심예린</strong> · 롤모델 피트 닥터(Pete Docter)처럼 마음을 움직이는 이야기를 지향합니다.
+              </div>
+            </article>
+
+            <div class="editorial-footnote" id="editorialFootnote">
+              언어(불어불문학)와 미디어(미디어학부), 그리고 데이터의 시선으로 이야기를 엮어 가는 포트폴리오입니다.
+            </div>
+          </div>
+
+          <div class="right-showcase-stack">
+            <div class="quick-tabs-bar">
+              <button type="button" class="soft-tab" data-scroll-target="#section-experience">학력 · 활동</button>
+              <button type="button" class="soft-tab" data-scroll-target="#section-skills">보유 역량</button>
+              <button type="button" class="soft-tab" data-scroll-target="#section-contact">연락처</button>
+            </div>
+
+            <div class="wiki-facts-card">
+              <div>
+                <div class="section-eyebrow">Verified Wiki Profile</div>
+                <h3 style="margin:0 0 14px; font-size:1.15rem;">위키 기반 프로필 요약</h3>
+                <div class="facts-grid" id="wikiFactsGrid"></div>
+              </div>
+
+              <div style="background:#FFFFFF; border:1px solid var(--border-hairline); border-radius:16px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:0.74rem; font-weight:700; color:var(--pink-deep);">FEATURED KNOWLEDGE GRAPH</div>
+                  <div style="font-size:0.95rem; font-weight:700;">IZ*ONE 활동 네트워크 (127개 개체 · 6개 관계)</div>
+                </div>
+                <button type="button" class="btn-secondary" id="cardToExplorerBtn" style="padding:8px 16px; font-size:0.84rem;">그래프 열기 →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Education & Experience -->
+      <section id="section-experience" class="section-block reveal">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Education &amp; Experience</div>
+            <h2 class="section-title">학력 및 활동 경력</h2>
+            <p class="section-desc">위키와 프로젝트 기획서에 확인된 이력을 우선 정리하였으며, 미확인 이력은 추후 채울 수 있는 편집 템플릿으로 표시했습니다.</p>
+          </div>
+        </div>
+
+        <div class="timeline-list" id="experienceTimeline"></div>
+      </section>
+
+      <!-- Skills -->
+      <section id="section-skills" class="section-block reveal">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">Capabilities &amp; Tools</div>
+            <h2 class="section-title">기술 스택 및 역량</h2>
+            <p class="section-desc">지식그래프 구축 프로젝트 및 전공 과정에서 실제로 활용한 도구와 역량입니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-3" id="skillsGrid"></div>
+      </section>
+
+      <!-- Contact -->
+      <section id="section-contact" class="section-block reveal">
+        <div class="contact-banner">
+          <div>
+            <div class="section-eyebrow">Contact &amp; Links</div>
+            <h2 class="section-title" style="margin-bottom:10px;">함께 이야기를 나누고 싶다면</h2>
+            <p style="margin:0 0 20px; color:var(--text-muted); font-size:0.95rem;">
+              방송·미디어 콘텐츠 기획, 디지털인문학 데이터 분석, 협업 문의는 이메일로 언제든 연락 주세요.
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <a class="btn-primary" id="mailtoBtn" href="mailto:yelin20050118@gmail.com">이메일 보내기</a>
+              <button type="button" class="btn-secondary" id="copyEmailBtn">이메일 주소 복사</button>
+            </div>
+          </div>
+
+          <div class="contact-links-grid" id="contactLinksGrid"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ==================== PAGE 2: PROJECTS ==================== -->
+    <section id="page-projects" class="page-view" aria-labelledby="projectsPageTitle">
+      <div class="editorial-frame">
+        <div class="section-header" style="margin-bottom:18px;">
+          <div>
+            <div class="section-eyebrow">Selected Works &amp; Archive</div>
+            <h1 id="projectsPageTitle" class="section-title">프로젝트 아카이브</h1>
+            <p class="section-desc">카드를 클릭하면 기획 배경, 맡은 역할, 작업 과정, 성과 및 데이터 모델 구조를 상세히 확인할 수 있습니다.</p>
+          </div>
+        </div>
+
+        <div class="filter-bar" role="tablist" aria-label="프로젝트 카테고리 필터" id="projectFilters"></div>
+        <div class="projects-asymmetric-grid" id="projectsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 3: DATA EXPLORER ==================== -->
+    <section id="page-explorer" class="page-view" aria-labelledby="explorerPageTitle">
+      <div class="editorial-frame">
+        <div class="section-header" style="margin-bottom:18px;">
+          <div>
+            <div class="section-eyebrow">Interactive Neo4j Graph Explorer</div>
+            <h1 id="explorerPageTitle" class="section-title">IZ*ONE 활동 네트워크 데이터 탐색기</h1>
+            <p class="section-desc">디지털인문학 응용(COLA173-18) C팀이 구축한 6개 클래스·6개 관계 유형 지식그래프 데이터를 직접 탐색해 보세요.</p>
+          </div>
+        </div>
+
+        <div class="stats-strip" id="graphStatsStrip"></div>
+
+        <div class="explorer-controls">
+          <div class="controls-row">
+            <input
+              type="search"
+              id="graphSearchInput"
+              class="control-input"
+              placeholder="노드 이름 검색 (예: 권은비, 르세라핌, 너무너무너무)..."
+              aria-label="노드 이름 검색"
+            />
+            <select id="nodeTypeFilter" class="control-select" aria-label="노드 유형 필터">
+              <option value="ALL">모든 노드 유형 (Class)</option>
+            </select>
+            <select id="relTypeFilter" class="control-select" aria-label="관계 유형 필터">
+              <option value="ALL">모든 관계 유형 (Relationship)</option>
+            </select>
+            <button type="button" class="btn-secondary" id="resetGraphBtn" style="padding:9px 16px;">초기화</button>
+          </div>
+
+          <div class="preset-row">
+            <span class="preset-label">핵심 분석 질의 (Cypher Q1~Q3):</span>
+            <button type="button" class="preset-btn is-active" data-preset="ALL">전체 네트워크</button>
+            <button type="button" class="preset-btn" data-preset="Q1">Q1. 해체 후 진로 분화</button>
+            <button type="button" class="preset-btn" data-preset="Q2">Q2. 해체 후 방송·협업 접점</button>
+            <button type="button" class="preset-btn" data-preset="Q3">Q3. 프로듀스48 유닛 조합</button>
+          </div>
+
+          <div class="query-insight-box" id="queryInsightBox"></div>
+        </div>
+
+        <div class="explorer-workspace">
+          <div class="graph-stage-card">
+            <canvas id="graphCanvas" aria-label="IZ*ONE 지식그래프 인터랙티브 네트워크"></canvas>
+            <div class="graph-tooltip" id="graphTooltip"></div>
+
+            <div class="graph-toolbar" role="toolbar" aria-label="그래프 화면 제어">
+              <button type="button" class="graph-tool-btn" id="zoomInBtn" title="확대">+</button>
+              <button type="button" class="graph-tool-btn" id="zoomOutBtn" title="축소">−</button>
+              <button type="button" class="graph-tool-btn" id="fitGraphBtn" title="화면에 맞춤">Fit</button>
+            </div>
+
+            <div class="graph-legend" id="graphLegend"></div>
+          </div>
+
+          <aside class="inspector-card" aria-label="선택된 노드 상세 정보" id="nodeInspector">
+            <div>
+              <div class="section-eyebrow">Node Inspector</div>
+              <h2 style="font-size:1.1rem; margin:0;">노드를 클릭해 상세 정보를 확인하세요</h2>
+            </div>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:0;">
+              그래프의 원(노드)을 클릭하면 해당 인물, 소속사, 그룹, 유닛, 해체 후 활동의 속성과 연결된 모든 관계망이 표시됩니다. 노드를 드래그하거나 마우스 휠로 확대·축소할 수 있습니다.
+            </p>
+            <div class="prop-box">
+              <strong>빠른 탐색 추천 노드</strong>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;" id="quickNodePicks"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Project Detail Modal -->
+  <div class="modal-backdrop" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalProjectTitle">
+    <div class="modal-dialog" id="projectModalContent"></div>
+  </div>
+
+  <button type="button" class="back-to-top" id="backToTopBtn" aria-label="맨 위로 이동">↑</button>
+
+  <footer class="site-footer">
+    <div>© <span id="footerYear">2026</span> 심예린 · Personal Portfolio &amp; Knowledge Graph Showcase</div>
+    <div style="margin-top:4px; font-size:0.78rem;">Single-File HTML Edition — Ready for GitHub Pages</div>
+  </footer>
+
+  <script>
+    /* ============================================================================
+       [포트폴리오 데이터 설정 영역]
+       아래 상수 객체만 수정하면 HTML 구조를 건드리지 않고 내용을 쉽게 업데이트할 수 있습니다.
+       확인이 되지 않은 정보는 [수정 필요]로 표시해 두었으니 실제 내용으로 교체해 주세요.
+    ============================================================================ */
+
+    const PROFILE_DATA = {
+      nameKo: "심예린",
+      nameEn: "[영문 이름 입력 — 예: Yerin Shim]",
+      email: "yelin20050118@gmail.com",
+      admissionYear: "2024",
+      university: "[소속 대학교 입력]",
+      major: "불어불문학",
+      doubleMajor: "미디어학부",
+      mbti: "ENFJ",
+      roleModel: "피트 닥터 (Pete Docter)",
+      careerGoal: "방송PD (전문가 트랙 · 서울/수도권 희망)",
+      sns: "인스타그램",
+      aiTool: "챗GPT",
+      clubInterest: "언어 분과",
+      soulFood: "감자튀김",
+      dreamTravel: "캐나다",
+      wikiUrl: "https://dh.aks.ac.kr/~kimseoyun/wiki/index.php/%EC%82%AC%EC%9A%A9%EC%9E%90:%EC%8B%AC%EC%98%88%EB%A6%B0",
+      // GitHub Pages에 개인 사진(예: ./profile.jpg)을 함께 올린 경우 아래 경로를 교체할 수 있습니다.
+      portraitUrl: "https://dh.aks.ac.kr/~kimseoyun/wiki/images/thumb/e/ee/%EC%8B%AC%EC%98%88%EB%A6%B0%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84.jpeg/500px-%EC%8B%AC%EC%98%88%EB%A6%B0%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84.jpeg",
+      heroIntro: "불어불문학의 언어적 감수성과 미디어학부의 스토리텔링 시선을 바탕으로, 사람과 콘텐츠의 관계를 구조화하고 기획하는 예비 방송PD 심예린입니다.",
+      aboutLetter: "2024년 입학 이후 불어불문학을 주전공으로, 미디어학부를 복수전공으로 이수하며 언어·문화·미디어의 접점을 탐구하고 있습니다. '디지털인문학 응용' 교과목에서는 프로젝트 그룹 IZ*ONE의 데뷔 전후 활동과 관계망을 Neo4j 지식그래프로 설계·구축하며, 산재한 콘텐츠 데이터를 맥락 있는 이야기로 엮어내는 경험을 쌓았습니다. ENFJ의 소통 에너지와 롤모델 피트 닥터의 서사적 통찰을 닮아, 시청자와 사용자를 깊이 연결하는 콘텐츠를 만들고 싶습니다.",
+      keywords: ["방송PD 지망", "불어불문학 × 미디어학부", "지식그래프(Neo4j)", "ENFJ 스토리텔러"],
+      contactLinks: [
+        { label: "Email", value: "yelin20050118@gmail.com", href: "mailto:yelin20050118@gmail.com" },
+        { label: "Digital Humanities Wiki", value: "사용자:심예린 위키 바로가기", href: "https://dh.aks.ac.kr/~kimseoyun/wiki/index.php/%EC%82%AC%EC%9A%A9%EC%9E%90:%EC%8B%AC%EC%98%88%EB%A6%B0" },
+        { label: "LinkedIn [수정 필요]", value: "linkedin.com/in/[아이디 입력]", href: "#" },
+        { label: "GitHub / Instagram [수정 필요]", value: "github.com/[아이디] · 인스타그램", href: "#" }
+      ]
+    };
+
+    const EXPERIENCE_DATA = [
+      {
+        period: "2024 ~ 현재",
+        title: "불어불문학 전공 · 미디어학부 복수전공 재학",
+        org: "[소속 대학교 입력] · 2024학번",
+        desc: "프랑스어권 문학·문화에 대한 인문학적 이해와 미디어 콘텐츠 기획·제작 역량을 함께 기르고 있습니다.",
+        isPlaceholder: false
+      },
+      {
+        period: "2026.10 ~ 12",
+        title: "디지털인문학 응용 (COLA173-18) 지식그래프 팀 프로젝트",
+        org: "C팀 · 발표 및 중간 검토 책임자",
+        desc: "IZ*ONE 멤버 12명의 데뷔 전후 활동 네트워크(126+ 개체) 구축 프로젝트에서 중간 검토·발표 총괄 및 데뷔 전후 소속사 데이터 수집·Neo4j 질의 검증에 참여했습니다.",
+        isPlaceholder: false
+      },
+      {
+        period: "[기간 입력]",
+        title: "[대외활동 / 동아리 / 학회 활동명 입력 — 예: 언어 분과 동아리 또는 방송국 활동]",
+        org: "[소속 기관·단체명 입력] [수정 필요]",
+        desc: "위키에 기재되지 않은 동아리, 서포터즈, 인턴십, 공모전·수상 이력이 있다면 EXPERIENCE_DATA 배열에 추가해 주세요.",
+        isPlaceholder: true
+      }
+    ];
+
+    const SKILLS_DATA = [
+      {
+        group: "데이터 · 디지털인문학",
+        items: [
+          { name: "Neo4j & Cypher", note: "지식그래프 구축 및 관계망 질의" },
+          { name: "지식그래프 온톨로지 설계", note: "클래스·관계·속성 모델링" },
+          { name: "데이터 정제 & 검증", note: "Google Sheets 편찬 및 오류 교정" }
+        ]
+      },
+      {
+        group: "미디어 · 기획 및 커뮤니케이션",
+        items: [
+          { name: "콘텐츠 기획 & 스토리텔링", note: "미디어학부 복수전공 · 방송PD 트랙" },
+          { name: "프레젠테이션 & 발표", note: "팀 프로젝트 중간·최종 발표 담당" },
+          { name: "Canva & ChatGPT 활용", note: "시각 자료 디자인 및 Cypher/설계 보조" }
+        ]
+      },
+      {
+        group: "언어 · 추가 역량 [수정 필요]",
+        items: [
+          { name: "프랑스어 · 한국어", note: "불어불문학 전공 기반 언어 감수성" },
+          { name: "[어학 점수 / 자격증 입력]", note: "[예: DELF, 토익, 편집 툴 등 수정 필요]" },
+          { name: "[영상 편집 툴 입력]", note: "[예: Premiere Pro, Final Cut 등]" }
+        ]
+      }
+    ];
+
+    /* 프로젝트 추가 방법: 아래 PROJECTS_DATA 배열에 동일한 키 구조로 새 객체를 추가하세요. */
+    const PROJECTS_DATA = [
+      {
+        id: "izone-kg",
+        featured: true,
+        isTemplate: false,
+        category: "Data & Research",
+        categoryLabel: "데이터 · 리서치 / 기획",
+        period: "2026.10 ~ 2026.12 (10주)",
+        title: "프로젝트 그룹 IZ*ONE(아이즈원) 데뷔 전후 활동 네트워크 지식그래프",
+        summary: "해체 이후 다양한 진로로 분화된 아이즈원 멤버 12인의 소속사, 그룹, 프로듀스48 유닛, 해체 후 공동 활동을 6개 클래스와 6개 관계 유형의 Neo4j 지식그래프로 구축한 프로젝트입니다.",
+        overview: "디지털인문학 응용(COLA173-18) 교과목에서 C팀(백주연, 유사라, 심예린, 봉문예)이 수행한 지식그래프 데이터베이스 구축 및 네트워크 분석 프로젝트입니다.",
+        background: "프로젝트 그룹 IZ*ONE은 활동 종료 이후 솔로 가수, 걸그룹 재데뷔(IVE, LE SSERAFIM, SAY MY NAME), 배우, 예능·라디오 등으로 활동이 다각화되었습니다. 단순 연표나 개별 검색으로 파악하기 어려운 멤버 간 재연결과 소속사 이동 경로를 관계망으로 시각화하고자 했습니다.",
+        role: [
+          "발표 및 중간 검토 책임자(7주차 설계 확정안 리뷰 및 10/26 중간발표 진행)",
+          "나무위키 기반 아이즈원 멤버들의 데뷔 전후 연예기획사(13곳) 데이터 수집",
+          "Google Sheets 데이터 편찬 및 Neo4j Cypher 질의(Q1~Q3) 검증·해석 참여"
+        ],
+        process: [
+          "포함/제외 범위 설정 및 3가지 핵심 질문(Q1 해체 후 진로 분화, Q2 방송·화보 협업 접점, Q3 프로듀스48 유닛 패턴) 수립",
+          "6개 클래스(인물 12, 연예기획사 13, 시간 3, 아이돌그룹 5, 유닛 20, 해체 후 활동 73+) 및 6개 관계(소속되었다, 재데뷔하였다, 활동하였다, 참여하였다, 출연하였다, 선발되었다) 모델링",
+          "Neo4j 입력 중 발견된 ID 매핑 오류(예: 'ロクいち！福岡' target_id A02→A01 수정) 정제 및 Cypher 질의 고도화"
+        ],
+        results: [
+          "126+ 개체와 멤버별 활동 경로를 연결한 인터랙티브 Neo4j 그래프 DB 구축",
+          "해체 후에도 예능·라디오·화보·광고 모델을 통해 멤버 간 반복적 공동 출연 접점이 유지됨을 데이터로 확인",
+          "프로듀스48 '너무너무너무 1조/2조' 각 4인 공동 참여 등 유닛 분포 특성 도출"
+        ],
+        tech: ["Neo4j", "Cypher", "Google Sheets", "데이터 모델링", "Canva", "ChatGPT"],
+        links: [
+          { label: "Google Sheets 원천 데이터", url: "https://docs.google.com/spreadsheets/d/1TmD9e-Kc0PZtY-NyvX70fhiGkm_bxaUUm0nDzXQrUFs/edit?gid=0#gid=0" },
+          { label: "데이터 탐색기에서 직접 보기", action: "openExplorer" }
+        ]
+      },
+      {
+        id: "template-media",
+        featured: false,
+        isTemplate: true,
+        category: "Media & Content",
+        categoryLabel: "미디어 · 콘텐츠 [샘플 템플릿]",
+        period: "[제작 기간 입력]",
+        title: "[방송PD / 미디어학부 영상·콘텐츠 제작 프로젝트 제목 입력]",
+        summary: "미디어학부 전공 수업이나 팀 제작으로 진행한 영상 기획·연출·편집 프로젝트가 있다면 이 템플릿을 수정해 추가해 주세요.",
+        overview: "[프로젝트 한 줄 개요를 입력하세요 — 추후 수정 가능]",
+        background: "[기획 배경과 타깃 시청자/목표를 입력하세요]",
+        role: ["[예: 기획 및 구성안 작성]", "[예: 촬영·편집 디렉팅]"],
+        process: ["[사전 리서치 및 시놉시스 구성]", "[촬영 및 후반 편집 작업]"],
+        results: ["[상영회/공모전 결과 또는 핵심 배운 점을 입력하세요]"],
+        tech: ["[예: Premiere Pro]", "[구성안/기획서]"],
+        links: []
+      },
+      {
+        id: "template-planning",
+        featured: false,
+        isTemplate: true,
+        category: "Planning & Strategy",
+        categoryLabel: "기획 · 전략 [샘플 템플릿]",
+        period: "[진행 기간 입력]",
+        title: "[불어불문학 × 문화 콘텐츠 기획 또는 리서치 프로젝트 입력]",
+        summary: "인문학적 아카이빙, 언어·문화 리서치, 프로그램 포맷 기획안 등 추가하고 싶은 프로젝트를 자유롭게 채워 넣을 수 있습니다.",
+        overview: "[프로젝트 개요를 입력하세요 — 추후 수정 가능]",
+        background: "[기획 의도와 문제의식을 입력하세요]",
+        role: ["[담당 역할 입력]"],
+        process: ["[조사 및 기획 프로세스 입력]"],
+        results: ["[도출된 산출물과 인사이트 입력]"],
+        tech: ["[사용 도구 입력]"],
+        links: []
+      }
+    ];
+
+    /* ============================================================================
+       [Neo4j 지식그래프 데이터 영역 — (월)지식그래프DB_프로젝트_기획서.md 원문 기반]
+       추후 Neo4j에서 JSON을 export하면 아래 nodes / links 형식에 맞춰 교체할 수 있습니다.
+    ============================================================================ */
+    const CLASS_META = {
+      "인물": { color: "#D64078", radius: 16, label: "인물 (멤버 12)" },
+      "연예기획사": { color: "#7C5295", radius: 13, label: "연예기획사 (13)" },
+      "아이돌그룹": { color: "#E87A90", radius: 14, label: "아이돌그룹 (5)" },
+      "유닛": { color: "#D9822B", radius: 10, label: "프로듀스48 유닛 (20)" },
+      "해체 후 활동": { color: "#2E8B8B", radius: 9, label: "해체 후 활동 (74)" },
+      "시간": { color: "#64748B", radius: 11, label: "재데뷔 연도 (3)" }
+    };
+
+    const QUERY_PRESETS = {
+      ALL: {
+        title: "전체 IZ*ONE 활동 네트워크",
+        description: "기획서에 수록된 6개 클래스(인물, 연예기획사, 아이돌그룹, 프로듀스48 유닛, 해체 후 활동, 시간)와 6개 관계 유형 전체를 탐색합니다."
+      },
+      Q1: {
+        title: "Q1. 아이즈원 해체 이후 멤버들의 진로·소속사·그룹 재데뷔 분화",
+        description: "기획서 해석: 권은비(울림→알비더블유, 솔로), 미야와키 사쿠라(A.M.→쏘스뮤직, 르세라핌), 김채원(울림→쏘스뮤직, 르세라핌), 안유진·장원영(스타쉽, 아이브), 혼다 히토미(iNCODE, 세이마이네임), 최예나(위에화, 솔로), 이채연(WM, 솔로), 조유리(웨이크원, 솔로), 강혜원(8D→Peace, 배우), 김민주(매니지먼트 숲, 배우), 야부키 나코(TWIN PLANET, HKT48→배우)로 분화되었습니다."
+      },
+      Q2: {
+        title: "Q2. 해체 이후 멤버 간 방송·라디오·화보·광고 협업 접점",
+        description: "기획서 해석: 그룹 해체가 멤버 간 관계 단절을 의미하지 않습니다. 최예나·이채연('문명특급', '전효성의 꿈꾸는 라디오' 등), 미야와키 사쿠라·야부키 나코·혼다 히토미('クイズTHE違和感', 'ロクいち！福岡'), 권은비·최예나·김민주·조유리·강혜원 등이 다수의 콘텐츠와 모델('서든어택', '파리바게뜨')을 매개로 반복 재연결되었습니다."
+      },
+      Q3: {
+        title: "Q3. 프로듀스48 방영 당시 어떤 멤버들이 같은 유닛에 참여했는가?",
+        description: "기획서 해석: '너무너무너무 1조'(안유진·혼다 히토미·장원영·최예나)와 '너무너무너무 2조'(미야와키 사쿠라·이채연·김민주·권은비)에 각각 4명의 멤버가 함께 참여했으며, 파이널 경연곡 '반해버리잖아?'(5명)와 '앞으로 잘 부탁해'(7명) 등에서 멤버 간 공동 유닛 경험이 확인됩니다."
+      }
+    };
+
+    function buildGraphData() {
+      const nodes = [];
+      const links = [];
+      const nodeMap = new Map();
+
+      function addNode(id, type, props) {
+        if (!nodeMap.has(id)) {
+          const n = { id, label: id, type, props: props || {} };
+          nodeMap.set(id, n);
+          nodes.push(n);
+        }
+        return id;
+      }
+
+      function addLink(source, target, rel, note) {
+        if (nodeMap.has(source) && nodeMap.has(target)) {
+          links.push({ source, target, rel, note: note || "" });
+        }
+      }
+
+      // 1. 인물 (12)
+      const members = [
+        ["권은비", { 설명: "아이즈원 출신 멤버", 진로: "솔로 가수 데뷔(2021)", 소속사: "울림 엔터테인먼트 → 알비더블유" }],
+        ["미야와키 사쿠라", { 설명: "아이즈원 출신 멤버", 진로: "르세라핌 그룹 데뷔(2022)", 소속사: "A.M. 엔터테인먼트 → 쏘스뮤직(하이브)" }],
+        ["강혜원", { 설명: "아이즈원 출신 멤버", 진로: "배우 데뷔(2021)", 소속사: "8D 엔터테인먼트 → Peace 엔터테인먼트" }],
+        ["최예나", { 설명: "아이즈원 출신 멤버", 진로: "솔로 가수 데뷔(2022)", 소속사: "위에화 엔터테인먼트" }],
+        ["이채연", { 설명: "아이즈원 출신 멤버", 진로: "솔로 가수 데뷔(2022)", 소속사: "WM 엔터테인먼트" }],
+        ["김채원", { 설명: "아이즈원 출신 멤버", 진로: "르세라핌 그룹 데뷔(2022)", 소속사: "울림 엔터테인먼트 → 쏘스뮤직(하이브)" }],
+        ["김민주", { 설명: "아이즈원 출신 멤버", 진로: "배우 데뷔", 소속사: "매니지먼트 숲" }],
+        ["야부키 나코", { 설명: "아이즈원 출신 멤버", 진로: "기존 그룹(HKT48) → 배우", 소속사: "TWIN PLANET" }],
+        ["혼다 히토미", { 설명: "아이즈원 출신 멤버", 진로: "기존 그룹(AKB48) → SAY MY NAME(2024)", 소속사: "iNCODE" }],
+        ["조유리", { 설명: "아이즈원 출신 멤버", 진로: "솔로 가수 데뷔(2021)", 소속사: "웨이크원" }],
+        ["안유진", { 설명: "아이즈원 출신 멤버", 진로: "아이브(IVE) 리더(2021)", 소속사: "스타쉽엔터테인먼트" }],
+        ["장원영", { 설명: "아이즈원 출신 멤버", 진로: "아이브(IVE) 멤버(2021)", 소속사: "스타쉽엔터테인먼트" }]
+      ];
+      members.forEach(([name, props]) => addNode(name, "인물", props));
+
+      // 2. 연예기획사 (13)
+      const agencies = [
+        ["울림 엔터테인먼트", { 구분: "연예기획사", 멤버: "권은비(전), 김채원(전)" }],
+        ["A.M. 엔터테인먼트", { 구분: "연예기획사", 멤버: "미야와키 사쿠라(전)" }],
+        ["스타쉽엔터테인먼트", { 구분: "연예기획사", 멤버: "안유진, 장원영" }],
+        ["쏘스뮤직(하이브)", { 구분: "연예기획사", 멤버: "미야와키 사쿠라, 김채원" }],
+        ["8D 엔터테인먼트", { 구분: "연예기획사", 멤버: "강혜원(전)" }],
+        ["Peace 엔터테인먼트", { 구분: "연예기획사", 멤버: "강혜원" }],
+        ["알비더블유", { 구분: "연예기획사", 멤버: "권은비" }],
+        ["웨이크원", { 구분: "연예기획사", 멤버: "조유리" }],
+        ["iNCODE", { 구분: "연예기획사", 멤버: "혼다 히토미" }],
+        ["WM 엔터테인먼트", { 구분: "연예기획사", 멤버: "이채연" }],
+        ["위에화 엔터테인먼트", { 구분: "연예기획사", 멤버: "최예나" }],
+        ["매니지먼트 숲", { 구분: "연예기획사", 멤버: "김민주" }],
+        ["TWIN PLANET", { 구분: "연예기획사", 멤버: "야부키 나코" }]
+      ];
+      agencies.forEach(([name, props]) => addNode(name, "연예기획사", props));
+
+      // 소속되었다 관계
+      const agencyLinks = [
+        ["권은비", "울림 엔터테인먼트", "이전 소속"],
+        ["권은비", "알비더블유", "현 소속"],
+        ["미야와키 사쿠라", "A.M. 엔터테인먼트", "이전 소속"],
+        ["미야와키 사쿠라", "쏘스뮤직(하이브)", "현 소속"],
+        ["강혜원", "8D 엔터테인먼트", "이전 소속"],
+        ["강혜원", "Peace 엔터테인먼트", "현 소속"],
+        ["최예나", "위에화 엔터테인먼트", "소속"],
+        ["이채연", "WM 엔터테인먼트", "소속"],
+        ["김채원", "울림 엔터테인먼트", "이전 소속"],
+        ["김채원", "쏘스뮤직(하이브)", "현 소속"],
+        ["김민주", "매니지먼트 숲", "소속"],
+        ["야부키 나코", "TWIN PLANET", "소속"],
+        ["혼다 히토미", "iNCODE", "소속"],
+        ["조유리", "웨이크원", "소속"],
+        ["안유진", "스타쉽엔터테인먼트", "소속"],
+        ["장원영", "스타쉽엔터테인먼트", "소속"]
+      ];
+      agencyLinks.forEach(([m, a, note]) => addLink(m, a, "소속되었다", note));
+
+      // 3. 시간 (3) & 4. 아이돌그룹 (5)
+      ["2021", "2022", "2024"].forEach(y => addNode(y, "시간", { 구분: "아이즈원 해체 후 재데뷔 연도" }));
+
+      const groups = [
+        ["아이브", { 구분: "해체 후 데뷔 그룹", 데뷔일: "2021", 멤버: "안유진, 장원영" }],
+        ["르세라핌", { 구분: "해체 후 데뷔 그룹", 데뷔일: "2022", 멤버: "미야와키 사쿠라, 김채원" }],
+        ["세이마이네임", { 구분: "해체 후 데뷔 그룹", 데뷔일: "2024", 멤버: "혼다 히토미" }],
+        ["HKT48", { 구분: "데뷔 전 그룹", 데뷔일: "2013", 멤버: "미야와키 사쿠라, 야부키 나코" }],
+        ["AKB48", { 구분: "데뷔 전 그룹", 데뷔일: "2006/2014", 멤버: "미야와키 사쿠라, 혼다 히토미" }]
+      ];
+      groups.forEach(([name, props]) => addNode(name, "아이돌그룹", props));
+
+      // 재데뷔하였다 / 활동하였다 / 시간 연결
+      addLink("안유진", "아이브", "재데뷔하였다", "2021년 리더");
+      addLink("장원영", "아이브", "재데뷔하였다", "2021년");
+      addLink("미야와키 사쿠라", "르세라핌", "재데뷔하였다", "2022년");
+      addLink("김채원", "르세라핌", "재데뷔하였다", "2022년 리더");
+      addLink("혼다 히토미", "세이마이네임", "재데뷔하였다", "2024년");
+
+      addLink("미야와키 사쿠라", "HKT48", "활동하였다", "데뷔 전 그룹");
+      addLink("야부키 나코", "HKT48", "활동하였다", "데뷔 전·후 그룹");
+      addLink("미야와키 사쿠라", "AKB48", "활동하였다", "겸임");
+      addLink("혼다 히토미", "AKB48", "활동하였다", "데뷔 전·후 그룹");
+
+      addLink("권은비", "2021", "재데뷔하였다", "솔로 데뷔 연도");
+      addLink("강혜원", "2021", "재데뷔하였다", "배우 데뷔 연도");
+      addLink("조유리", "2021", "재데뷔하였다", "솔로 데뷔 연도");
+      addLink("안유진", "2021", "재데뷔하였다", "아이브 데뷔 연도");
+      addLink("장원영", "2021", "재데뷔하였다", "아이브 데뷔 연도");
+      addLink("최예나", "2022", "재데뷔하였다", "솔로 데뷔 연도");
+      addLink("이채연", "2022", "재데뷔하였다", "솔로 데뷔 연도");
+      addLink("미야와키 사쿠라", "2022", "재데뷔하였다", "르세라핌 데뷔 연도");
+      addLink("김채원", "2022", "재데뷔하였다", "르세라핌 데뷔 연도");
+      addLink("혼다 히토미", "2024", "재데뷔하였다", "세이마이네임 데뷔 연도");
+
+      // 5. 유닛 (프로듀스48 경연곡 20개)
+      const units = [
+        ["귀를 기울이면 2조", "1차 경연곡", ["야부키 나코"]],
+        ["너무너무너무 1조", "1차 경연곡", ["안유진", "혼다 히토미", "장원영", "최예나"]],
+        ["너무너무너무 2조", "1차 경연곡", ["미야와키 사쿠라", "이채연", "김민주", "권은비"]],
+        ["우아하게 1조", "1차 경연곡", ["김채원"]],
+        ["붐바야 2조", "1차 경연곡", ["강혜원"]],
+        ["단발머리 1조", "1차 경연곡", ["조유리"]],
+        ["에너제틱", "2차 경연곡", ["조유리"]],
+        ["다시 만난 세계", "2차 경연곡", ["야부키 나코", "김채원"]],
+        ["뚜두뚜두", "2차 경연곡", ["미야와키 사쿠라"]],
+        ["Side to Side", "2차 경연곡", ["장원영"]],
+        ["Sorry Not Sorry", "2차 경연곡", ["권은비", "안유진", "최예나", "이채연"]],
+        ["Touch", "2차 경연곡", ["혼다 히토미", "김민주"]],
+        ["1000%", "3차 경연곡", ["이채연", "김민주"]],
+        ["너에게 닿기를", "3차 경연곡", ["야부키 나코", "조유리", "김채원"]],
+        ["I AM", "3차 경연곡", ["최예나", "안유진"]],
+        ["Rollin’ Rollin’", "3차 경연곡", ["혼다 히토미", "장원영"]],
+        ["Rumor", "3차 경연곡", ["권은비"]],
+        ["다시 만나", "3차 경연곡", ["강혜원", "미야와키 사쿠라"]],
+        ["반해버리잖아?", "파이널 경연곡", ["권은비", "최예나", "미야와키 사쿠라", "강혜원", "김채원"]],
+        ["앞으로 잘 부탁해", "파이널 경연곡", ["혼다 히토미", "조유리", "장원영", "안유진", "김민주", "야부키 나코", "이채연"]]
+      ];
+      units.forEach(([uName, round, list]) => {
+        addNode(uName, "유닛", { 라운드: `프로듀스 48 ${round}`, 참여멤버: list.join(", ") });
+        list.forEach(m => addLink(m, uName, "참여하였다", round));
+      });
+
+      // 6. 해체 후 활동 (기획서 개체 추출표 74건 전체)
+      const activities = [
+        ["ロクいち！福岡", "예능", "2021년", ["미야와키 사쿠라", "야부키 나코"]],
+        ["문명특급", "예능", "2021년", ["최예나", "이채연"]],
+        ["INDEED 잡지 Vol.12", "화보", "2021년", ["권은비", "김채원"]],
+        ["クイズTHE違和感", "예능", "2021년", ["미야와키 사쿠라", "야부키 나코", "혼다 히토미"]],
+        ["전효성의 꿈꾸는 라디오", "라디오", "2021년", ["최예나", "이채연"]],
+        ["ELLE 8월호", "화보", "2021년", ["강혜원", "조유리"]],
+        ["에스콰이어 2021년 8월호", "화보", "2021년", ["권은비", "김채원"]],
+        ["Singles 2021년 8월호", "화보", "2021년", ["권은비", "김채원"]],
+        ["今夜、咲良の木の下で", "라디오", "2021년", ["미야와키 사쿠라", "야부키 나코"]],
+        ["구해줘! 숙소", "예능", "2021년", ["최예나", "김민주"]],
+        ["예나는 동물탐정_03", "예능", "2021년", ["최예나", "조유리"]],
+        ["아돌라 여행사: 혬챈율의 칫힝트립", "예능", "2021년", ["강혜원", "이채연", "조유리"]],
+        ["예나는 동물탐정_08", "예능", "2021년", ["권은비", "최예나"]],
+        ["아돌라스쿨 홈커밍데이_2021-10", "예능", "2021년", ["강혜원", "조유리"]],
+        ["박소현의 러브게임", "라디오", "2021년", ["권은비", "조유리"]],
+        ["IDOL RADIO", "라디오", "2021년", ["권은비", "조유리"]],
+        ["99즈 게임", "예능", "2021년", ["강혜원", "최예나"]],
+        ["STATION Z", "라디오", "2021년", ["권은비", "조유리"]],
+        ["예나는 동물탐정_16", "예능", "2021년", ["최예나", "김민주"]],
+        ["2021 MBC 가요대제전", "공연", "2021년", ["김민주", "안유진", "장원영"]],
+        ["스튜디오 문나잇", "예능", "2022년", ["권은비", "강혜원", "조유리"]],
+        ["아돌라스쿨 홈커밍데이_2022-01", "예능", "2022년", ["권은비", "이채연"]],
+        ["우리 식구 됐어요", "예능", "2022년", ["강혜원", "이채연"]],
+        ["비밀:리에", "예능", "2022년", ["권은비", "강혜원"]],
+        ["아돌라 여행사: 혬율비의 칫힝트립2", "예능", "2022년", ["권은비", "강혜원", "조유리"]],
+        ["쇼! 음악중심", "음악 방송", "2022년", ["김민주", "조유리"]],
+        ["Secret Doors", "공연", "2022년", ["권은비", "이채연"]],
+        ["IDOL RADIO 시즌 2", "라디오", "2022년", ["최예나", "조유리"]],
+        ["배성재의 TEN_2022-07", "라디오", "2022년", ["최예나", "조유리"]],
+        ["슈퍼핑거 시즌 3", "예능", "2022년", ["권은비", "이채연"]],
+        ["세리자베스", "예능", "2022년", ["권은비", "최예나"]],
+        ["2022 추석 아이돌스타 선수권대회", "예능", "2022년", ["최예나", "조유리"]],
+        ["아돌라 여행사: 은연히의 칫힝트립3", "예능", "2022년", ["권은비", "이채연", "혼다 히토미"]],
+        ["웬디의 영스트리트", "라디오", "2022년", ["권은비", "이채연"]],
+        ["아이키의 Thumbs Up", "예능", "2022년", ["권은비", "이채연"]],
+        ["GOT7 영재의 친한친구", "라디오", "2022년", ["권은비", "이채연"]],
+        ["두시탈출 컬투쇼", "라디오", "2022년", ["권은비", "이채연", "조유리"]],
+        ["배성재의 TEN_2022-11", "라디오", "2022년", ["권은비", "이채연"]],
+        ["후루야 마사유키의 POP★A", "라디오", "2022년", ["야부키 나코", "조유리"]],
+        ["보이즈 플래닛: 스타 이즈 본", "예능", "2022년", ["권은비", "최예나"]],
+        ["겁도 없꾸라", "예능", "2023년", ["미야와키 사쿠라", "최예나"]],
+        ["서든어택", "모델", "2023년", ["권은비", "강혜원"], "선발되었다"],
+        ["혜미리예채파", "예능", "2023년", ["최예나", "김채원"]],
+        ["걸스 나잇 아웃_2023-05", "예능", "2023년", ["최예나", "조유리"]],
+        ["걸스 나잇 아웃_2023-06", "예능", "2023년", ["최예나", "이채연"]],
+        ["야부키 나코의 레코멘!_2023-08", "라디오", "2023년", ["최예나", "야부키 나코"]],
+        ["LOVE IT!_2023-08", "예능", "2023년", ["최예나", "야부키 나코", "혼다 히토미"]],
+        ["권은비의 영스트리트_2023-08", "라디오", "2023년", ["권은비", "조유리"]],
+        ["선넘는 맵찔이", "예능", "2023년", ["권은비", "조유리"]],
+        ["권은비의 영스트리트_2023-09", "라디오", "2023년", ["권은비", "이채연"]],
+        ["전지적 참견 시점_2023-12", "예능", "2023년", ["권은비", "최예나", "김민주"]],
+        ["권은비의 영스트리트_2023-12", "라디오", "2023년", ["권은비", "강혜원"]],
+        ["ANOTHER SKY", "예능", "2023년", ["최예나", "야부키 나코"]],
+        ["야부키 나코의 레코멘!_2024-01", "라디오", "2024년", ["야부키 나코", "혼다 히토미"]],
+        ["LOVE IT!_2024-01", "예능", "2024년", ["야부키 나코", "혼다 히토미"]],
+        ["킹스미스", "예능", "2024년", ["이채연", "조유리"]],
+        ["야부키 나코의 레코멘!_2024-02", "라디오", "2024년", ["최예나", "야부키 나코"]],
+        ["LOVE IT!_2024-02", "예능", "2024년", ["최예나", "야부키 나코"]],
+        ["인싸동 술찌_2024-02", "예능", "2024년", ["강혜원", "이채연"]],
+        ["인싸동 술찌_2024-04", "예능", "2024년", ["이채연", "조유리"]],
+        ["권은비의 영스트리트_2024-07", "라디오", "2024년", ["권은비", "강혜원", "이채연"]],
+        ["보그 코리아 9월호", "화보", "2024년", ["권은비", "최예나"]],
+        ["하루하루 채연이_2024-10", "예능", "2024년", ["권은비", "이채연", "김민주", "조유리"]],
+        ["하루하루 채연이_2024-11", "예능", "2024년", ["강혜원", "최예나", "이채연", "김민주", "조유리"]],
+        ["문명특급 낭정순 밴드", "예능", "2025년", ["권은비", "최예나"]],
+        ["방가방가 채연이", "예능", "2025년", ["권은비", "이채연"]],
+        ["은비theYapper", "예능", "2025년", ["권은비", "최예나", "김채원", "김민주"]],
+        ["덕통사고2", "예능", "2025년", ["이채연", "혼다 히토미"]],
+        ["티어메이커", "예능", "2025년", ["권은비", "최예나"]],
+        ["파리바게뜨", "모델", "2025년", ["권은비", "김민주"], "선발되었다"],
+        ["놀라운 토요일", "예능", "2026년", ["최예나", "이채연"]],
+        ["네모로부터 시작된, 잡힐 듯 말 듯 한 이세계: 극장판_01", "무대", "2026년", ["최예나", "혼다 히토미"]],
+        ["네모로부터 시작된, 잡힐 듯 말 듯 한 이세계: 극장판_02", "무대", "2026년", ["최예나", "조유리"]],
+        ["전지적 참견 시점_2026-09", "예능", "2026년", ["최예나", "김민주"]]
+      ];
+
+      activities.forEach(([title, kind, year, list, customRel]) => {
+        addNode(title, "해체 후 활동", { 분류: kind, 연도: year, 참여멤버: list.join(", ") });
+        const rel = customRel || "출연하였다";
+        list.forEach(m => addLink(m, title, rel, `${year} · ${kind}`));
+      });
+
+      return { nodes, links };
+    }
+
+    const GRAPH_DATA = buildGraphData();
+
+    /* ============================================================================
+       [UI 렌더링 & 인터랙션 로직]
+    ============================================================================ */
+    (function () {
+      // 1. Portrait fallback SVG (in case external wiki photo is offline)
+      const fallbackSvg = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 320">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFF0F6"/><stop offset="100%" stop-color="#F7B8D2"/></linearGradient></defs>
+          <rect width="260" height="320" fill="url(#g)"/>
+          <circle cx="130" cy="118" r="46" fill="#FFFFFF" stroke="#E88DB5" stroke-width="3"/>
+          <path d="M58 265c0-42 32-72 72-72s72 30 72 72" fill="#FFFFFF" stroke="#E88DB5" stroke-width="3"/>
+          <text x="130" y="298" text-anchor="middle" fill="#B53D70" font-family="sans-serif" font-size="14" font-weight="700">심예린 Profile</text>
+        </svg>`
+      );
+
+      function bindPortrait(imgEl) {
+        imgEl.src = PROFILE_DATA.portraitUrl;
+        imgEl.onerror = function () {
+          imgEl.onerror = null;
+          imgEl.src = fallbackSvg;
+        };
+      }
+
+      // 2. Render About Page
+      function renderAboutPage() {
+        document.getElementById("heroEnglishName").textContent = PROFILE_DATA.nameEn;
+        document.getElementById("heroIntroText").textContent = PROFILE_DATA.heroIntro;
+        document.getElementById("aboutLetterBody").textContent = PROFILE_DATA.aboutLetter;
+        document.getElementById("bannerEmailText").textContent = PROFILE_DATA.email;
+
+        bindPortrait(document.getElementById("heroPortraitImg"));
+        bindPortrait(document.getElementById("bannerAvatarImg"));
+
+        const kwEl = document.getElementById("heroKeywordsList");
+        kwEl.innerHTML = PROFILE_DATA.keywords.map(k => `<span>${k}</span>`).join("");
+
+        const wikiFacts = [
+          { label: "전공 · 복수전공", value: `${PROFILE_DATA.major} · ${PROFILE_DATA.doubleMajor}` },
+          { label: "입학연도 · 성향", value: `${PROFILE_DATA.admissionYear}학번 · ${PROFILE_DATA.mbti}` },
+          { label: "관심 직무 · 형태", value: PROFILE_DATA.careerGoal },
+          { label: "롤모델 · AI 도구", value: `${PROFILE_DATA.roleModel} · ${PROFILE_DATA.aiTool}` },
+          { label: "관심 동아리 · SNS", value: `${PROFILE_DATA.clubInterest} · ${PROFILE_DATA.sns}` },
+          { label: "소울푸드 · 여행지", value: `${PROFILE_DATA.soulFood} · ${PROFILE_DATA.dreamTravel}` }
+        ];
+        document.getElementById("wikiFactsGrid").innerHTML = wikiFacts.map(f => `
+          <div class="fact-item">
+            <div class="fact-item-label">${f.label}</div>
+            <div class="fact-item-value">${f.value}</div>
+          </div>
+        `).join("");
+
+        document.getElementById("experienceTimeline").innerHTML = EXPERIENCE_DATA.map(item => `
+          <article class="timeline-card ${item.isPlaceholder ? "is-placeholder" : ""}">
+            <div><span class="timeline-period">${item.period}</span></div>
+            <div>
+              <h3 class="timeline-title">${item.title} ${item.isPlaceholder ? '<span class="editable-notice">편집 가능</span>' : ""}</h3>
+              <div class="timeline-org">${item.org}</div>
+              <p class="timeline-desc">${item.desc}</p>
+            </div>
+          </article>
+        `).join("");
+
+        document.getElementById("skillsGrid").innerHTML = SKILLS_DATA.map(group => `
+          <article class="editorial-card">
+            <h3 class="skill-group-title">${group.group}</h3>
+            <ul class="skill-items">
+              ${group.items.map(s => `
+                <li class="skill-item">
+                  <span class="skill-name">${s.name}</span>
+                  <span class="skill-note">${s.note}</span>
+                </li>
+              `).join("")}
+            </ul>
+          </article>
+        `).join("");
+
+        document.getElementById("contactLinksGrid").innerHTML = PROFILE_DATA.contactLinks.map(link => {
+          const isExternal = link.href.startsWith("http");
+          const isPlaceholder = link.href === "#";
+          return `
+            <a class="contact-link-box" href="${link.href}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ""} ${isPlaceholder ? 'onclick="event.preventDefault(); alertCopyHint();"' : ""}>
+              <span class="cl-label">${link.label}</span>
+              <span class="cl-val">${link.value}</span>
+            </a>
+          `;
+        }).join("");
+      }
+
+      window.alertCopyHint = function () {
+        const msg = document.getElementById("copyEmailBtn");
+        msg.textContent = "PROFILE_DATA에서 링크를 입력해 주세요";
+        setTimeout(() => { msg.textContent = "이메일 주소 복사"; }, 2200);
+      };
+
+      // 3. Render Projects Page & Modal
+      let activeProjectCategory = "ALL";
+      const projectCategories = [
+        { key: "ALL", label: "전체 (All)" },
+        { key: "Data & Research", label: "데이터 · 리서치" },
+        { key: "Media & Content", label: "미디어 · 콘텐츠" },
+        { key: "Planning & Strategy", label: "기획 · 전략" }
+      ];
+
+      function renderProjectFilters() {
+        const bar = document.getElementById("projectFilters");
+        bar.innerHTML = projectCategories.map(cat => `
+          <button type="button" class="filter-btn ${activeProjectCategory === cat.key ? "is-active" : ""}" data-cat="${cat.key}">
+            ${cat.label}
+          </button>
+        `).join("");
+        bar.querySelectorAll(".filter-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            activeProjectCategory = btn.dataset.cat;
+            renderProjectFilters();
+            renderProjectsGrid();
+          });
+        });
+      }
+
+      function renderOntologySvg() {
+        return `
+          <svg viewBox="0 0 380 210" width="100%" style="max-width:360px;" role="img" aria-label="IZ*ONE 지식그래프 6개 클래스 개념도">
+            <rect x="4" y="4" width="372" height="202" rx="18" fill="#FFFFFF" stroke="#F7B8D2" stroke-width="1.5"/>
+            <line x1="190" y1="105" x2="72" y2="46" stroke="#E88DB5" stroke-width="1.8"/>
+            <line x1="190" y1="105" x2="308" y2="46" stroke="#E88DB5" stroke-width="1.8"/>
+            <line x1="190" y1="105" x2="72" y2="164" stroke="#E88DB5" stroke-width="1.8"/>
+            <line x1="190" y1="105" x2="308" y2="164" stroke="#E88DB5" stroke-width="1.8"/>
+            <line x1="190" y1="105" x2="190" y2="34" stroke="#E88DB5" stroke-width="1.8"/>
+            <g font-family="sans-serif" text-anchor="middle" font-weight="700">
+              <circle cx="190" cy="105" r="32" fill="#D64078"/>
+              <text x="190" y="103" fill="#FFF" font-size="12">인물</text>
+              <text x="190" y="118" fill="#FFE4EF" font-size="10">12명</text>
+
+              <rect x="20" y="24" width="104" height="36" rx="12" fill="#7C5295"/>
+              <text x="72" y="46" fill="#FFF" font-size="11">연예기획사 (13)</text>
+
+              <rect x="148" y="14" width="84" height="30" rx="12" fill="#64748B"/>
+              <text x="190" y="33" fill="#FFF" font-size="10.5">시간 (3)</text>
+
+              <rect x="256" y="24" width="104" height="36" rx="12" fill="#E87A90"/>
+              <text x="308" y="46" fill="#FFF" font-size="11">아이돌그룹 (5)</text>
+
+              <rect x="20" y="146" width="104" height="36" rx="12" fill="#D9822B"/>
+              <text x="72" y="168" fill="#FFF" font-size="11">유닛 (20)</text>
+
+              <rect x="246" y="146" width="122" height="36" rx="12" fill="#2E8B8B"/>
+              <text x="307" y="168" fill="#FFF" font-size="11">해체 후 활동 (74)</text>
+            </g>
+          </svg>
+        `;
+      }
+
+      function renderProjectsGrid() {
+        const filtered = activeProjectCategory === "ALL"
+          ? PROJECTS_DATA
+          : PROJECTS_DATA.filter(p => p.category === activeProjectCategory);
+
+        const grid = document.getElementById("projectsGrid");
+        grid.innerHTML = filtered.map(p => `
+          <article class="project-card ${p.featured ? "is-featured" : ""} ${p.isTemplate ? "is-template" : ""}">
+            <div class="project-visual">
+              ${p.id === "izone-kg" ? renderOntologySvg() : `
+                <div style="text-align:center; padding:12px;">
+                  <div style="font-family:var(--font-serif); font-style:italic; font-size:2rem; color:var(--pink-deep); margin-bottom:6px;">Portfolio Slot</div>
+                  <div style="font-size:0.84rem; color:var(--text-muted);">PROJECTS_DATA 배열에서 내용을 수정하세요</div>
+                </div>
+              `}
+            </div>
+            <div class="project-body">
+              <div>
+                <div class="project-meta-line">
+                  <span>${p.categoryLabel}</span>
+                  <span>${p.period}</span>
+                </div>
+                <h2 class="project-title">${p.title}</h2>
+                <p class="project-summary">${p.summary}</p>
+              </div>
+              <div>
+                <div class="project-tech-line">
+                  <strong style="color:var(--text-main);">기술 및 도구:</strong> ${p.tech.join(" · ")}
+                </div>
+                <div class="project-actions" style="margin-top:14px;">
+                  <button type="button" class="btn-primary open-project-btn" data-pid="${p.id}" style="padding:9px 18px; font-size:0.86rem;">상세 보기</button>
+                  ${p.id === "izone-kg" ? `<button type="button" class="btn-secondary goto-explorer-inline" style="padding:8px 16px; font-size:0.84rem;">그래프 탐색기 →</button>` : ""}
+                </div>
+              </div>
+            </div>
+          </article>
+        `).join("");
+
+        grid.querySelectorAll(".open-project-btn").forEach(btn => {
+          btn.addEventListener("click", () => openProjectModal(btn.dataset.pid));
+        });
+        grid.querySelectorAll(".goto-explorer-inline").forEach(btn => {
+          btn.addEventListener("click", () => switchPage("explorer"));
+        });
+      }
+
+      let lastFocusedBeforeModal = null;
+      function openProjectModal(projectId) {
+        const p = PROJECTS_DATA.find(item => item.id === projectId);
+        if (!p) return;
+        lastFocusedBeforeModal = document.activeElement;
+        const modal = document.getElementById("projectModal");
+        const content = document.getElementById("projectModalContent");
+
+        content.innerHTML = `
+          <button type="button" class="modal-close-btn" id="closeModalBtn" aria-label="상세 창 닫기">✕</button>
+          <div class="section-eyebrow">${p.categoryLabel} · ${p.period}</div>
+          <h3 id="modalProjectTitle" style="font-size:1.45rem; margin:4px 0 12px; padding-right:44px;">${p.title}</h3>
+          <p style="margin:0; color:var(--text-muted);">${p.overview}</p>
+
+          <div class="modal-section">
+            <h4>기획 배경 및 목표</h4>
+            <p>${p.background}</p>
+          </div>
+          <div class="modal-section">
+            <h4>맡은 역할</h4>
+            <ul>${p.role.map(r => `<li>${r}</li>`).join("")}</ul>
+          </div>
+          <div class="modal-section">
+            <h4>주요 작업 과정</h4>
+            <ul>${p.process.map(r => `<li>${r}</li>`).join("")}</ul>
+          </div>
+          <div class="modal-section">
+            <h4>결과 및 성과</h4>
+            <ul>${p.results.map(r => `<li>${r}</li>`).join("")}</ul>
+          </div>
+          <div class="modal-section">
+            <h4>사용 기술 및 도구</h4>
+            <p>${p.tech.join(" · ")}</p>
+          </div>
+          ${p.id === "izone-kg" ? `
+            <div class="modal-section">
+              <h4>지식그래프 온톨로지 다이어그램</h4>
+              <div style="background:var(--pink-softer); border-radius:16px; padding:18px; display:flex; justify-content:center;">
+                ${renderOntologySvg()}
+              </div>
+            </div>
+          ` : ""}
+          ${p.links.length ? `
+            <div class="modal-section">
+              <h4>관련 자료 및 링크</h4>
+              <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
+                ${p.links.map(l => l.action === "openExplorer"
+                  ? `<button type="button" class="btn-primary" id="modalOpenExplorerBtn">${l.label} →</button>`
+                  : `<a class="btn-secondary" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label} ↗</a>`
+                ).join("")}
+              </div>
+            </div>
+          ` : ""}
+        `;
+
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        const closeBtn = document.getElementById("closeModalBtn");
+        closeBtn.focus();
+        closeBtn.addEventListener("click", closeProjectModal);
+        const expBtn = document.getElementById("modalOpenExplorerBtn");
+        if (expBtn) {
+          expBtn.addEventListener("click", () => {
+            closeProjectModal();
+            switchPage("explorer");
+          });
+        }
+      }
+
+      function closeProjectModal() {
+        const modal = document.getElementById("projectModal");
+        modal.classList.remove("is-open");
+        document.body.style.overflow = "";
+        if (lastFocusedBeforeModal) lastFocusedBeforeModal.focus();
+      }
+
+      document.getElementById("projectModal").addEventListener("click", (e) => {
+        if (e.target.id === "projectModal") closeProjectModal();
+      });
+
+      // 4. Navigation & Page Switching (No reload)
+      function switchPage(pageName) {
+        document.querySelectorAll(".page-view").forEach(v => v.classList.remove("is-active"));
+        const target = document.getElementById(`page-${pageName}`);
+        if (target) target.classList.add("is-active");
+
+        document.querySelectorAll(".nav-btn").forEach(btn => {
+          const match = btn.dataset.page === pageName;
+          btn.classList.toggle("is-active", match);
+          if (match) btn.setAttribute("aria-current", "page");
+          else btn.removeAttribute("aria-current");
+        });
+
+        // Close mobile drawer if open
+        const drawer = document.getElementById("mobileDrawer");
+        drawer.classList.remove("is-open");
+        document.getElementById("mobileMenuBtn").setAttribute("aria-expanded", "false");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (window.location.hash !== `#${pageName}`) {
+          history.replaceState(null, "", `#${pageName}`);
+        }
+
+        if (pageName === "explorer") {
+          setTimeout(() => {
+            resizeGraphCanvas();
+            if (!graphInitialized) initGraphExplorer();
+          }, 40);
+        }
+      }
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.addEventListener("click", () => switchPage(btn.dataset.page));
+      });
+      document.getElementById("brandHomeBtn").addEventListener("click", () => switchPage("about"));
+      document.getElementById("heroToProjectsBtn").addEventListener("click", () => switchPage("projects"));
+      document.getElementById("heroToExplorerBtn").addEventListener("click", () => switchPage("explorer"));
+      document.getElementById("quickExplorerBtn").addEventListener("click", () => switchPage("explorer"));
+      document.getElementById("cardToExplorerBtn").addEventListener("click", () => switchPage("explorer"));
+
+      document.querySelectorAll(".soft-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const el = document.querySelector(btn.dataset.scrollTarget);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        });
+      });
+
+      document.getElementById("mobileMenuBtn").addEventListener("click", function () {
+        const drawer = document.getElementById("mobileDrawer");
+        const isOpen = drawer.classList.toggle("is-open");
+        this.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.getElementById("copyEmailBtn").addEventListener("click", async function () {
+        try {
+          await navigator.clipboard.writeText(PROFILE_DATA.email);
+          this.textContent = "복사 완료!";
+        } catch (_) {
+          this.textContent = PROFILE_DATA.email;
+        }
+        setTimeout(() => { this.textContent = "이메일 주소 복사"; }, 2200);
+      });
+
+      // Keyboard ESC support
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          if (document.getElementById("projectModal").classList.contains("is-open")) {
+            closeProjectModal();
+          }
+          const drawer = document.getElementById("mobileDrawer");
+          if (drawer.classList.contains("is-open")) {
+            drawer.classList.remove("is-open");
+            document.getElementById("mobileMenuBtn").setAttribute("aria-expanded", "false");
+          }
+        }
+      });
+
+      // Back to top + Scroll reveal
+      const backBtn = document.getElementById("backToTopBtn");
+      window.addEventListener("scroll", () => {
+        backBtn.classList.toggle("is-visible", window.scrollY > 360);
+      });
+      backBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+      if ("IntersectionObserver" in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+      } else {
+        document.querySelectorAll(".reveal").forEach(el => el.classList.add("is-revealed"));
+      }
+
+      /* ==========================================================================
+         5. DATA EXPLORER (Pure Vanilla JS HTML5 Canvas Force-Directed Graph)
+      ========================================================================== */
+      let graphInitialized = false;
+      const canvas = document.getElementById("graphCanvas");
+      const ctx = canvas.getContext("2d");
+      let simNodes = [];
+      let simLinks = [];
+      let visibleNodeIds = new Set();
+      let visibleLinkSet = new Set();
+      let selectedNode = null;
+      let hoveredNode = null;
+      let draggingNode = null;
+      let isPanning = false;
+      let panStart = { x: 0, y: 0 };
+      let camera = { x: 0, y: 0, scale: 0.92 };
+      let activePreset = "ALL";
+      let searchQuery = "";
+      let filterNodeType = "ALL";
+      let filterRelType = "ALL";
+      let animFrameId = null;
+      let simAlpha = 1;
+
+      function renderExplorerChrome() {
+        const nodeTypes = [...new Set(GRAPH_DATA.nodes.map(n => n.type))];
+        const relTypes = [...new Set(GRAPH_DATA.links.map(l => l.rel))];
+
+        document.getElementById("graphStatsStrip").innerHTML = [
+          { label: "전체 노드 수 (Entities)", value: GRAPH_DATA.nodes.length },
+          { label: "전체 관계 수 (Relationships)", value: GRAPH_DATA.links.length },
+          { label: "노드 유형 수 (Classes)", value: nodeTypes.length },
+          { label: "관계 유형 수 (Relation Types)", value: relTypes.length }
+        ].map(s => `
+          <div class="stat-card">
+            <div class="stat-label">${s.label}</div>
+            <div class="stat-value">${s.value}</div>
+          </div>
+        `).join("");
+
+        const nodeSel = document.getElementById("nodeTypeFilter");
+        nodeTypes.forEach(t => {
+          const opt = document.createElement("option");
+          opt.value = t;
+          opt.textContent = CLASS_META[t] ? CLASS_META[t].label : t;
+          nodeSel.appendChild(opt);
+        });
+
+        const relSel = document.getElementById("relTypeFilter");
+        relTypes.forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r;
+          opt.textContent = r;
+          relSel.appendChild(opt);
+        });
+
+        document.getElementById("graphLegend").innerHTML = nodeTypes.map(t => `
+          <span class="legend-item">
+            <span class="legend-dot" style="background:${CLASS_META[t].color};"></span>
+            ${t}
+          </span>
+        `).join("");
+
+        const quickPicks = ["권은비", "최예나", "미야와키 사쿠라", "안유진", "르세라핌", "너무너무너무 1조"];
+        document.getElementById("quickNodePicks").innerHTML = quickPicks.map(name => `
+          <button type="button" class="preset-btn quick-pick-btn" data-node="${name}" style="padding:4px 10px; font-size:0.78rem;">${name}</button>
+        `).join("");
+        document.querySelectorAll(".quick-pick-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (!graphInitialized) initGraphExplorer();
+            const found = simNodes.find(n => n.id === btn.dataset.node);
+            if (found) focusAndSelectNode(found);
+          });
+        });
+      }
+
+      function resizeGraphCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.max(rect.width, 300);
+        const h = window.innerWidth <= 768 ? 430 : 540;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function initGraphExplorer() {
+        if (graphInitialized) return;
+        graphInitialized = true;
+        resizeGraphCanvas();
+
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        const classAnchors = {
+          "인물": { x: w * 0.5, y: h * 0.5 },
+          "연예기획사": { x: w * 0.22, y: h * 0.24 },
+          "아이돌그룹": { x: w * 0.78, y: h * 0.24 },
+          "시간": { x: w * 0.5, y: h * 0.16 },
+          "유닛": { x: w * 0.22, y: h * 0.76 },
+          "해체 후 활동": { x: w * 0.78, y: h * 0.74 }
+        };
+
+        simNodes = GRAPH_DATA.nodes.map((n, idx) => {
+          const anchor = classAnchors[n.type] || { x: w / 2, y: h / 2 };
+          const angle = (idx * 2.39996);
+          const spread = n.type === "인물" ? 85 : 130;
+          return {
+            ...n,
+            x: anchor.x + Math.cos(angle) * spread * (0.4 + (idx % 5) * 0.16),
+            y: anchor.y + Math.sin(angle) * spread * (0.4 + (idx % 5) * 0.16),
+            vx: 0,
+            vy: 0,
+            radius: (CLASS_META[n.type] && CLASS_META[n.type].radius) || 10,
+            color: (CLASS_META[n.type] && CLASS_META[n.type].color) || "#888"
+          };
+        });
+
+        const byId = new Map(simNodes.map(n => [n.id, n]));
+        simLinks = GRAPH_DATA.links
+          .map(l => ({ ...l, sourceNode: byId.get(l.source), targetNode: byId.get(l.target) }))
+          .filter(l => l.sourceNode && l.targetNode);
+
+        applyFilters();
+        startSimulation();
+      }
+
+      function applyFilters() {
+        const q = searchQuery.trim().toLowerCase();
+        const presetRelMap = {
+          Q1: new Set(["소속되었다", "재데뷔하였다", "활동하였다"]),
+          Q2: new Set(["출연하였다", "선발되었다"]),
+          Q3: new Set(["참여하였다"])
+        };
+
+        const allowedLinks = simLinks.filter(l => {
+          if (filterRelType !== "ALL" && l.rel !== filterRelType) return false;
+          if (activePreset !== "ALL" && presetRelMap[activePreset] && !presetRelMap[activePreset].has(l.rel)) return false;
+          return true;
+        });
+
+        visibleLinkSet = new Set();
+        const connectedIds = new Set();
+        allowedLinks.forEach(l => {
+          const sMatchType = filterNodeType === "ALL" || l.sourceNode.type === filterNodeType;
+          const tMatchType = filterNodeType === "ALL" || l.targetNode.type === filterNodeType;
+          if (filterNodeType === "ALL" || sMatchType || tMatchType) {
+            visibleLinkSet.add(l);
+            connectedIds.add(l.sourceNode.id);
+            connectedIds.add(l.targetNode.id);
+          }
+        });
+
+        visibleNodeIds = new Set();
+        simNodes.forEach(n => {
+          const matchesQuery = !q || n.label.toLowerCase().includes(q);
+          const matchesType = filterNodeType === "ALL" || n.type === filterNodeType;
+          const matchesPreset = activePreset === "ALL" || connectedIds.has(n.id);
+          if (matchesQuery && matchesType && matchesPreset) {
+            if (filterRelType === "ALL" || connectedIds.has(n.id)) {
+              visibleNodeIds.add(n.id);
+            }
+          }
+        });
+
+        // Include 1-hop neighbors of search matches for richer context
+        if (q) {
+          const matched = new Set(visibleNodeIds);
+          simLinks.forEach(l => {
+            if (matched.has(l.sourceNode.id)) {
+              visibleNodeIds.add(l.targetNode.id);
+              visibleLinkSet.add(l);
+            } else if (matched.has(l.targetNode.id)) {
+              visibleNodeIds.add(l.sourceNode.id);
+              visibleLinkSet.add(l);
+            }
+          });
+        }
+
+        const insightBox = document.getElementById("queryInsightBox");
+        if (activePreset !== "ALL" && QUERY_PRESETS[activePreset]) {
+          const p = QUERY_PRESETS[activePreset];
+          insightBox.innerHTML = `<strong style="color:var(--pink-deep);">${p.title}</strong><div style="margin-top:4px;">${p.description}</div>`;
+          insightBox.classList.add("is-visible");
+        } else {
+          insightBox.classList.remove("is-visible");
+        }
+
+        simAlpha = Math.max(simAlpha, 0.35);
+      }
+
+      function startSimulation() {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        function tick() {
+          stepPhysics();
+          drawGraph();
+          animFrameId = requestAnimationFrame(tick);
+        }
+        tick();
+      }
+
+      function stepPhysics() {
+        if (simAlpha < 0.008 && !draggingNode) return;
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        const activeNodes = simNodes.filter(n => visibleNodeIds.has(n.id));
+        const len = activeNodes.length;
+
+        // Repulsion
+        for (let i = 0; i < len; i++) {
+          const a = activeNodes[i];
+          for (let j = i + 1; j < len; j++) {
+            const b = activeNodes[j];
+            let dx = b.x - a.x;
+            let dy = b.y - a.y;
+            let distSq = dx * dx + dy * dy + 0.1;
+            if (distSq > 26000) continue;
+            const dist = Math.sqrt(distSq);
+            const force = (1750 / distSq) * simAlpha;
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+            a.vx -= fx; a.vy -= fy;
+            b.vx += fx; b.vy += fy;
+          }
+        }
+
+        // Springs along visible edges
+        visibleLinkSet.forEach(l => {
+          const a = l.sourceNode;
+          const b = l.targetNode;
+          if (!visibleNodeIds.has(a.id) || !visibleNodeIds.has(b.id)) return;
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const targetDist = l.rel === "출연하였다" ? 95 : 78;
+          const force = (dist - targetDist) * 0.025 * simAlpha;
+          const fx = (dx / dist) * force;
+          const fy = (dy / dist) * force;
+          a.vx += fx; a.vy += fy;
+          b.vx -= fx; b.vy -= fy;
+        });
+
+        // Center gravity & velocity damping
+        const cx = w / 2;
+        const cy = h / 2;
+        activeNodes.forEach(n => {
+          if (n === draggingNode) return;
+          n.vx += (cx - n.x) * 0.0035 * simAlpha;
+          n.vy += (cy - n.y) * 0.0035 * simAlpha;
+          n.vx *= 0.82;
+          n.vy *= 0.82;
+          n.x += n.vx;
+          n.y += n.vy;
+        });
+
+        simAlpha *= 0.985;
+      }
+
+      function drawGraph() {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.translate(w / 2 + camera.x, h / 2 + camera.y);
+        ctx.scale(camera.scale, camera.scale);
+        ctx.translate(-w / 2, -h / 2);
+
+        const neighborIds = new Set();
+        if (selectedNode) {
+          neighborIds.add(selectedNode.id);
+          visibleLinkSet.forEach(l => {
+            if (l.sourceNode === selectedNode) neighborIds.add(l.targetNode.id);
+            if (l.targetNode === selectedNode) neighborIds.add(l.sourceNode.id);
+          });
+        }
+
+        // Draw edges
+        visibleLinkSet.forEach(l => {
+          if (!visibleNodeIds.has(l.sourceNode.id) || !visibleNodeIds.has(l.targetNode.id)) return;
+          const isHighlighted = selectedNode && (l.sourceNode === selectedNode || l.targetNode === selectedNode);
+          ctx.beginPath();
+          ctx.moveTo(l.sourceNode.x, l.sourceNode.y);
+          ctx.lineTo(l.targetNode.x, l.targetNode.y);
+          if (selectedNode) {
+            ctx.strokeStyle = isHighlighted ? "#B53D70" : "rgba(210, 180, 194, 0.18)";
+            ctx.lineWidth = isHighlighted ? 2 : 0.8;
+          } else {
+            ctx.strokeStyle = "rgba(205, 165, 184, 0.45)";
+            ctx.lineWidth = 1;
+          }
+          ctx.stroke();
+
+          if (isHighlighted && camera.scale > 0.7) {
+            const mx = (l.sourceNode.x + l.targetNode.x) / 2;
+            const my = (l.sourceNode.y + l.targetNode.y) / 2;
+            ctx.font = "600 9.5px sans-serif";
+            ctx.fillStyle = "#B53D70";
+            ctx.textAlign = "center";
+            ctx.fillText(l.rel, mx, my - 3);
+          }
+        });
+
+        // Draw nodes
+        simNodes.forEach(n => {
+          if (!visibleNodeIds.has(n.id)) return;
+          const isSelected = n === selectedNode;
+          const isHovered = n === hoveredNode;
+          const dimmed = selectedNode && !neighborIds.has(n.id);
+
+          ctx.save();
+          ctx.globalAlpha = dimmed ? 0.2 : 1;
+
+          if (isSelected || isHovered) {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius + 5, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(232, 141, 181, 0.35)";
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+          ctx.fillStyle = n.color;
+          ctx.fill();
+          ctx.lineWidth = isSelected ? 2.5 : 1.5;
+          ctx.strokeStyle = isSelected ? "#333333" : "#FFFFFF";
+          ctx.stroke();
+
+          // Always label prominent classes, neighbors of selected node, or when zoomed in
+          const showLabel = n.type === "인물" || n.type === "아이돌그룹" || n.type === "연예기획사" ||
+            isSelected || isHovered || (selectedNode && neighborIds.has(n.id)) || camera.scale > 1.35;
+
+          if (showLabel) {
+            ctx.font = (n.type === "인물" || isSelected) ? "700 11px sans-serif" : "500 10px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#333333";
+            ctx.fillText(n.label, n.x, n.y + n.radius + 13);
+          }
+          ctx.restore();
+        });
+
+        ctx.restore();
+      }
+
+      function screenToWorld(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const sx = clientX - rect.left;
+        const sy = clientY - rect.top;
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        return {
+          x: (sx - w / 2 - camera.x) / camera.scale + w / 2,
+          y: (sy - h / 2 - camera.y) / camera.scale + h / 2,
+          sx, sy
+        };
+      }
+
+      function findNodeAt(wx, wy) {
+        for (let i = simNodes.length - 1; i >= 0; i--) {
+          const n = simNodes[i];
+          if (!visibleNodeIds.has(n.id)) continue;
+          const dx = wx - n.x;
+          const dy = wy - n.y;
+          if (dx * dx + dy * dy <= (n.radius + 5) * (n.radius + 5)) return n;
+        }
+        return null;
+      }
+
+      function focusAndSelectNode(node) {
+        selectedNode = node;
+        updateInspector(node);
+        simAlpha = Math.max(simAlpha, 0.12);
+        drawGraph();
+      }
+
+      function updateInspector(node) {
+        const box = document.getElementById("nodeInspector");
+        if (!node) return;
+        const badgeColor = (CLASS_META[node.type] && CLASS_META[node.type].color) || "#B53D70";
+        const propEntries = Object.entries(node.props || {});
+        const connected = [];
+        simLinks.forEach(l => {
+          if (l.sourceNode === node) connected.push({ other: l.targetNode, rel: l.rel, dir: "→" });
+          else if (l.targetNode === node) connected.push({ other: l.sourceNode, rel: l.rel, dir: "←" });
+        });
+
+        box.innerHTML = `
+          <div>
+            <span class="inspector-class-badge" style="background:${badgeColor};">${node.type}</span>
+            <h2 class="inspector-node-title">${node.label}</h2>
+          </div>
+
+          <div class="prop-box">
+            <strong style="display:block; margin-bottom:6px; color:var(--pink-deep);">속성 정보 (Properties)</strong>
+            ${propEntries.length ? propEntries.map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`).join("") : "<div>등록된 추가 속성 없음</div>"}
+          </div>
+
+          <div>
+            <strong style="display:block; margin-bottom:8px; font-size:0.88rem; color:var(--text-main);">연결된 노드 및 관계 (${connected.length}건)</strong>
+            <ul class="edge-list">
+              ${connected.map(c => `
+                <li>
+                  <button type="button" class="edge-item-btn" data-jump="${c.other.id}">
+                    <span>${c.other.label} <small style="color:var(--text-muted);">(${c.other.type})</small></span>
+                    <span class="edge-rel-tag">${c.dir} ${c.rel}</span>
+                  </button>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+        `;
+
+        box.querySelectorAll(".edge-item-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const target = simNodes.find(n => n.id === btn.dataset.jump);
+            if (target) {
+              visibleNodeIds.add(target.id);
+              focusAndSelectNode(target);
+            }
+          });
+        });
+      }
+
+      // Pointer Events on Canvas
+      let downPos = { x: 0, y: 0 };
+      canvas.addEventListener("pointerdown", (e) => {
+        const pt = screenToWorld(e.clientX, e.clientY);
+        downPos = { x: e.clientX, y: e.clientY };
+        const hit = findNodeAt(pt.x, pt.y);
+        if (hit) {
+          draggingNode = hit;
+          canvas.setPointerCapture(e.pointerId);
+        } else {
+          isPanning = true;
+          panStart = { x: e.clientX - camera.x, y: e.clientY - camera.y };
+        }
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        const pt = screenToWorld(e.clientX, e.clientY);
+        if (draggingNode) {
+          draggingNode.x = pt.x;
+          draggingNode.y = pt.y;
+          simAlpha = Math.max(simAlpha, 0.25);
+          drawGraph();
+          return;
+        }
+        if (isPanning) {
+          camera.x = e.clientX - panStart.x;
+          camera.y = e.clientY - panStart.y;
+          drawGraph();
+          return;
+        }
+        const hit = findNodeAt(pt.x, pt.y);
+        hoveredNode = hit;
+        const tip = document.getElementById("graphTooltip");
+        if (hit) {
+          tip.style.display = "block";
+          tip.style.left = Math.min(pt.sx + 12, canvas.clientWidth - 180) + "px";
+          tip.style.top = Math.max(pt.sy - 36, 8) + "px";
+          tip.innerHTML = `<strong>${hit.label}</strong><br/><span style="opacity:0.85;">${hit.type}</span>`;
+        } else {
+          tip.style.display = "none";
+        }
+        drawGraph();
+      });
+
+      canvas.addEventListener("pointerup", (e) => {
+        const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+        if (draggingNode && moved < 6) {
+          focusAndSelectNode(draggingNode);
+        } else if (!draggingNode && isPanning && moved < 5) {
+          selectedNode = null;
+          drawGraph();
+        }
+        draggingNode = null;
+        isPanning = false;
+      });
+
+      canvas.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.12 : 0.89;
+        camera.scale = Math.min(2.8, Math.max(0.4, camera.scale * factor));
+        drawGraph();
+      }, { passive: false });
+
+      document.getElementById("zoomInBtn").addEventListener("click", () => {
+        camera.scale = Math.min(2.8, camera.scale * 1.18);
+        drawGraph();
+      });
+      document.getElementById("zoomOutBtn").addEventListener("click", () => {
+        camera.scale = Math.max(0.4, camera.scale * 0.85);
+        drawGraph();
+      });
+      document.getElementById("fitGraphBtn").addEventListener("click", () => {
+        camera = { x: 0, y: 0, scale: 0.92 };
+        drawGraph();
+      });
+
+      document.getElementById("graphSearchInput").addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        applyFilters();
+        drawGraph();
+      });
+      document.getElementById("nodeTypeFilter").addEventListener("change", (e) => {
+        filterNodeType = e.target.value;
+        applyFilters();
+        drawGraph();
+      });
+      document.getElementById("relTypeFilter").addEventListener("change", (e) => {
+        filterRelType = e.target.value;
+        applyFilters();
+        drawGraph();
+      });
+
+      document.querySelectorAll(".preset-btn[data-preset]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activePreset = btn.dataset.preset;
+          document.querySelectorAll(".preset-btn[data-preset]").forEach(b => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          applyFilters();
+          drawGraph();
+        });
+      });
+
+      document.getElementById("resetGraphBtn").addEventListener("click", () => {
+        searchQuery = "";
+        filterNodeType = "ALL";
+        filterRelType = "ALL";
+        activePreset = "ALL";
+        selectedNode = null;
+        camera = { x: 0, y: 0, scale: 0.92 };
+        document.getElementById("graphSearchInput").value = "";
+        document.getElementById("nodeTypeFilter").value = "ALL";
+        document.getElementById("relTypeFilter").value = "ALL";
+        document.querySelectorAll(".preset-btn[data-preset]").forEach(b => {
+          b.classList.toggle("is-active", b.dataset.preset === "ALL");
+        });
+        applyFilters();
+        drawGraph();
+      });
+
+      window.addEventListener("resize", () => {
+        if (document.getElementById("page-explorer").classList.contains("is-active")) {
+          resizeGraphCanvas();
+          drawGraph();
+        }
+      });
+
+      // Initialize all views
+      renderAboutPage();
+      renderProjectFilters();
+      renderProjectsGrid();
+      renderExplorerChrome();
+
+      const initialHash = window.location.hash.replace("#", "");
+      if (["about", "projects", "explorer"].includes(initialHash)) {
+        switchPage(initialHash);
+      }
+    })();
+  </script>
+</body>
+</html>
